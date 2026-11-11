@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧠%3C/text%3E%3C/svg%3E">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>메타인지 체크리스트 v4 | 대전과학고등학교</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f172a;--bg2:#1e293b;--card:rgba(255,255,255,.045);--card2:rgba(255,255,255,.07);
+  --line:rgba(255,255,255,.13);--text:#f8fafc;--text2:#e2e8f0;--sub:#cbd5e1;--muted:#a3b1c6;
+  --accent:#818cf8;--accent2:#a5b4fc;--good:#34d399;--warn:#fbbf24;--bad:#f87171;--focus:#fde68a;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;font-family:'Noto Sans KR',system-ui,-apple-system,sans-serif}
+body{background:var(--bg) linear-gradient(160deg,#0f172a,#1e293b 60%,#0f172a) fixed;color:var(--text);min-height:100vh;min-height:100dvh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:6px}
+.wrap{max-width:540px;margin:0 auto;padding:28px 16px 72px}
+.center{text-align:center}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px}
+.h1{font-size:22px;font-weight:900;line-height:1.35;color:var(--accent2)}
+.h2{font-size:17px;font-weight:800;margin:0}
+.h3{font-size:15px;font-weight:700;color:var(--text2);margin-bottom:10px}
+.lbl{display:block;font-size:13px;font-weight:700;color:var(--sub);margin:0 0 6px}
+.hint{font-size:12.5px;color:var(--muted);line-height:1.6}
+.err{font-size:12.5px;color:var(--bad);margin:-6px 0 10px}
+.field{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.06);font-size:16px;margin-bottom:12px;outline:none}
+.field:focus{border-color:var(--accent)}
+.field[aria-invalid="true"]{border-color:var(--bad)}
+textarea.field{line-height:1.6;resize:vertical;margin-bottom:0}
+.row{display:flex;gap:10px}
+.row>*{flex:1;min-width:0}
+.btn{display:block;width:100%;padding:14px;border-radius:12px;font-size:15px;font-weight:700;text-align:center;transition:opacity .15s}
+.btn-primary{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;box-shadow:0 6px 24px rgba(99,102,241,.3)}
+.btn-ghost{border:1px solid var(--line);color:var(--sub)}
+.btn-soft{border:1px solid rgba(129,140,248,.4);background:rgba(129,140,248,.1);color:var(--accent2)}
+.btn-save{background:linear-gradient(135deg,#f59e0b,#f97316);color:#1c1204}
+.btn-done{background:#059669;color:#fff}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn-sm{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;font-size:13px;font-weight:700}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}
+.banner{border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.6;margin-bottom:16px}
+.banner.info{background:rgba(129,140,248,.1);border:1px solid rgba(129,140,248,.3);color:var(--text2)}
+.banner.warn{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.35);color:#fde68a}
+.banner.safe{background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.35);color:var(--text2)}
+.banner b{color:var(--text)}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--sub);line-height:1.5;cursor:pointer}
+.check input{width:20px;height:20px;margin-top:1px;accent-color:#818cf8;flex-shrink:0}
+/* stat tiles */
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 8px;text-align:center}
+.tile .v{font-size:20px;font-weight:900;color:var(--text)}
+.tile .k{font-size:11.5px;color:var(--muted);margin-top:2px}
+@media (max-width:380px){.tiles{grid-template-columns:repeat(2,1fr)}}
+/* section picker */
+.sec-btn{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border-radius:12px;border:2px solid rgba(255,255,255,.07);text-align:left;margin-bottom:8px}
+.sec-btn .t{font-size:14px;font-weight:700;color:var(--sub)}
+.sec-btn .s{font-size:12px;color:var(--muted);margin-top:2px}
+.box{width:22px;height:22px;border-radius:6px;border:2px solid #64748b;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;flex-shrink:0}
+/* checklist */
+.prog{height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}
+.prog>div{height:100%;background:linear-gradient(90deg,#6366f1,#a5b4fc);border-radius:3px;transition:width .4s}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin:14px 0 16px;padding-bottom:4px}
+.tab{padding:8px 14px;border-radius:20px;border:2px solid transparent;background:var(--card);color:var(--muted);font-size:13px;font-weight:700;white-space:nowrap}
+.sec-head{margin-bottom:16px;padding:14px 16px;border-radius:14px;border-left:4px solid}
+.item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px;transition:border-color .2s}
+.item.ok{border-color:rgba(129,140,248,.45)}
+.item .meta{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.badge{font-size:12px;font-weight:700;padding:2px 8px;border-radius:6px}
+.no{font-size:12px;color:var(--muted);font-weight:700}
+.kind{font-size:11.5px;color:var(--muted);background:rgba(255,255,255,.07);padding:2px 7px;border-radius:5px;margin-left:auto}
+.q{font-size:15px;line-height:1.6;color:var(--text2);font-weight:500;margin-bottom:6px}
+.sub{font-size:12.5px;color:var(--muted);line-height:1.55;margin-bottom:10px}
+.quote{border-left:3px solid var(--accent);background:rgba(129,140,248,.08);padding:8px 12px;border-radius:0 8px 8px 0;font-size:13.5px;color:var(--text2);margin-bottom:10px;line-height:1.55}
+.seg{display:flex;gap:8px}
+.seg-btn{flex:1;padding:10px 0;border-radius:10px;border:2px solid rgba(255,255,255,.1);color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px;transition:all .12s}
+.seg-sym{font-size:20px;font-weight:900;line-height:1.2}
+.seg-txt{font-size:12px;font-weight:700}
+.scale-ends{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);margin-top:6px}
+.pct-top{display:flex;align-items:center;gap:12px}
+.pct-val{font-size:26px;font-weight:900;min-width:70px;text-align:right}
+input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.14);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:#818cf8;border:3px solid #1e293b}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#818cf8;border:3px solid #1e293b}
+input[type=range].untouched::-webkit-slider-thumb{background:#64748b}
+input[type=range].untouched::-moz-range-thumb{background:#64748b}
+.quick-pcts{display:flex;gap:6px;margin-top:10px}
+.quick-pcts button{flex:1;padding:7px 0;border-radius:8px;border:1px solid var(--line);font-size:12.5px;color:var(--sub)}
+.quick-pcts button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent2);background:rgba(129,140,248,.12)}
+.strat-cat{font-size:12px;font-weight:700;color:var(--accent2);margin:10px 0 6px}
+.strat-cat span{color:var(--muted);font-weight:500}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:7px 10px;border-radius:9px;border:2px solid rgba(255,255,255,.1);color:var(--sub);font-size:13px;font-weight:600}
+.chip b{color:var(--accent2);margin-right:4px}
+.chip[aria-pressed="true"]{border-color:#818cf8;background:rgba(129,140,248,.16);color:#e0e7ff}
+.picked{margin-top:10px;padding:10px 12px;background:rgba(129,140,248,.07);border-radius:10px}
+.picked div{font-size:13px;color:var(--sub);margin-top:3px;line-height:1.5}
+.nudge{margin-top:8px;font-size:12.5px;color:#fde68a;line-height:1.5}
+.extra{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+.nav{display:flex;gap:10px;margin-top:20px}
+/* results */
+.ring{position:relative;width:150px;height:150px;margin:14px auto}
+.ring .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.bars{display:flex;flex-direction:column;gap:10px}
+.bar-row{display:grid;grid-template-columns:88px 1fr 46px;gap:10px;align-items:center}
+.bar-lbl{font-size:13px;color:var(--sub);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-track{height:12px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:0 4px 4px 0;transition:width .6s}
+.bar-val{font-size:13px;font-weight:700;color:var(--text2);text-align:right;font-variant-numeric:tabular-nums}
+.li{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.li:last-child{border-bottom:0}
+.li .n{font-size:16px;font-weight:900;color:var(--accent);width:26px;text-align:center;flex-shrink:0}
+.li .t{font-size:14px;font-weight:700;color:var(--text2)}
+.li .d{font-size:12.5px;color:var(--muted);margin-top:2px;line-height:1.5}
+.step{background:linear-gradient(135deg,rgba(99,102,241,.16),rgba(192,132,252,.1));border:1px solid rgba(165,180,252,.35)}
+.step p{font-size:14.5px;line-height:1.7;color:var(--text)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+/* overlay */
+.overlay{position:fixed;inset:0;background:rgba(2,6,23,.92);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px}
+.breath-box{max-width:360px;width:100%;text-align:center}
+.breath-circle{width:170px;height:170px;margin:0 auto 22px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#c7d2fe,#6366f1 60%,#3730a3);transform:scale(.55);transition:transform 6s ease-in-out;opacity:.9}
+.breath-circle.in{transform:scale(1);transition-duration:4s}
+.breath-circle.out{transform:scale(.55);transition-duration:6s}
+.breath-phase{font-size:20px;font-weight:800;margin-bottom:8px}
+.toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:12px 18px;border-radius:10px;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .25s;z-index:99;max-width:92%;text-align:center;line-height:1.5}
+.toast.show{opacity:1}
+.toast.success{background:#047857}
+.toast.error{background:#b91c1c}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.fade{animation:fadeUp .35s ease-out both}
+@media (prefers-reduced-motion:reduce){
+  .fade{animation:none}
+  .breath-circle,.breath-circle.in,.breath-circle.out{transition:none;transform:scale(.8)}
+  .bar-fill,.prog>div{transition:none}
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="config.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script>
+(function(){
+"use strict";
+var h=React.createElement, useState=React.useState, useEffect=React.useEffect, useRef=React.useRef;
+var CFG=window.CONFIG||{};
+var API=String(CFG.WEB_APP_URL||"").trim();
+var APP_VERSION="4.0.0";
+var SCORE_VERSION=2;
+var BACKEND_MAJOR=2;
+
+/* ───────── 저장소 (기기 내) ───────── */
+var store={
+  get:function(k,d){try{var v=localStorage.getItem(k);return v==null?d:JSON.parse(v);}catch(e){return d;}},
+  set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}},
+  del:function(k){try{localStorage.removeItem(k);}catch(e){}}
+};
+var K={profile:"mc4.profile",draft:"mc4.draft",log:"mc4.log",queue:"mc4.queue",remind:"mc4.remind"};
+
+/* ───────── 문항 ─────────
+ * v3 문항을 유지하되, 사용 데이터에서 드러난 약점에 맞춰 다음을 바꿈
+ *  - Q0  지난번 다짐 실천 여부 (이 기기에 지난 다짐이 있을 때만 표시)
+ *  - Q1  목표 한 줄 적기(선택) 추가 → Q4 달성도와 연결
+ *  - Q5  "내일 개선점" 자유 서술 → "언제 → 무엇을" 실행 계획
+ *  - Q6·A10 1분 호흡 안내 버튼
+ */
+var SECTIONS={
+  quick:{id:"quick",title:"Quick-Check",icon:"⚡",subtitle:"매 활동 후 2분 자기 점검",color:"#F59E0B",items:[
+    {no:"Q0",text:"지난번에 정한 다짐을 실천했다.",type:"조절",input:"rating",needsPrev:true},
+    {no:"Q1",text:"오늘 학습/연구의 구체적 목표를 설정하였다. (무엇을, 어디까지)",type:"계획",input:"rating",goal:true},
+    {no:"Q2",text:"학습 내용 특성에 맞는 인지전략을 선택하였다.",type:"전략",input:"strategy",sub:"오늘 쓴 전략을 고르세요. 전략마다 '이럴 때 쓰기'가 함께 보입니다."},
+    {no:"Q3",text:"핵심 개념을 자기 언어로 설명할 수 있는가? (자기 테스트)",type:"점검",input:"rating"},
+    {no:"Q4",text:"오늘 목표 달성도는 몇 %인가?",type:"평가",input:"percent",showGoal:true},
+    {no:"Q5",text:"다음 학습에서 바꿀 점을 '언제 → 무엇을'로 적어 보세요.",type:"조절",input:"plan",sub:"\"더 집중하자\"보다 \"폰 알림이 오면 → 가방에 넣는다\"처럼 상황과 행동을 정하면 실천하기 쉬워요."},
+    {no:"Q6",text:"집중이 흐트러질 때 알아차림 → 호흡으로 몰입을 회복했다. (편도체 안정화)",type:"조절",input:"rating",breath:true,sub:"투쟁-도망-경직 같은 정서 반응에서 빠져나오는 1분 호흡"},
+    {no:"Q7",text:"오늘 감사 1가지 또는 자기확언 한 문장을 적어 보세요. (mPFC 활성화)",type:"조절",input:"text",placeholder:"예) 친구의 설명 덕에 이해가 깊어졌다 / 나는 매일 한 걸음씩 성장하고 있다"},
+    {no:"Q8",text:"오늘 학습에 \"정확한 피드백 루프\"가 작동했다. (정답 확인·해설 비교·재시도)",type:"전략",input:"rating",sub:"단순 반복이 아닌 Deliberate Practice의 핵심"}
+  ]},
+  A:{id:"A",title:"학습 전 — 계획",icon:"🎯",subtitle:"Before Learning",color:"#60A5FA",items:[
+    {no:"1",text:"오늘의 학습/연구 목표를 구체적으로 설정하였다. (무엇을, 어디까지, 얼마나)",type:"계획",input:"rating"},
+    {no:"2",text:"목표가 달성 가능하면서도 도전적인 수준인지 확인하였다.",type:"계획",input:"rating"},
+    {no:"3",text:"목표 달성 여부를 확인할 수 있는 구체적 기준을 마련하였다. (페이지, 문제 수, 실험 단계)",type:"계획",input:"rating"},
+    {no:"4",text:"학습 내용 특성(암기/이해/적용/분석)에 맞는 인지전략을 선택하였다.",type:"전략",input:"rating"},
+    {no:"5",text:"선택한 인지전략을 기록하세요.",type:"전략",input:"strategy",sub:"오늘 사용할 전략을 고르세요."},
+    {no:"6",text:"학습/연구에 필요한 시간을 예측하고 배분하였다.",type:"계획",input:"rating"},
+    {no:"7",text:"집중할 수 있는 환경을 조성하였다. (방해 요소 제거)",type:"계획",input:"rating"},
+    {no:"8",text:"이 학습/연구를 하는 이유(목적·가치)를 인식하고 있다.",type:"계획",input:"rating"},
+    {no:"9",text:"오늘의 목표를 달성할 수 있다는 자신감은 어느 정도인가?",type:"계획",input:"scale5",lo:"전혀 없다",hi:"매우 높다"},
+    {no:"10",text:"학습 전 1분 호흡·알아차림으로 마음을 가라앉혔다. (편도체 안정화)",type:"조절",input:"rating",breath:true}
+  ]},
+  B:{id:"B",title:"학습 중 — 점검",icon:"🔍",subtitle:"During Learning",color:"#A78BFA",items:[
+    {no:"11",text:"지금 학습하는 내용을 자기 언어로 설명할 수 있는가?",type:"점검",input:"rating"},
+    {no:"12",text:"핵심 개념·원리를 정확히 이해하고 있는가?",type:"점검",input:"rating"},
+    {no:"13",text:"새로 배운 내용이 기존 지식과 어떻게 연결되는지 파악하였는가?",type:"점검",input:"rating"},
+    {no:"14",text:"현재 사용 중인 인지전략이 목표 달성에 효과적인가?",type:"점검",input:"rating"},
+    {no:"15",text:"전략이 효과적이지 않다면 다른 전략으로 전환했는가?",type:"조절",input:"rating"},
+    {no:"16",text:"계획한 시간 대비 진도가 적절한가?",type:"점검",input:"rating"},
+    {no:"17",text:"집중력이 유지되고 있는가? 방해 요소가 발생하지 않았는가?",type:"점검",input:"rating"},
+    {no:"18",text:"실패·막힘에 대해 \"성장 기회\"로 의미를 부여하였다. (성장 마인드셋)",type:"조절",input:"rating"},
+    {no:"19",text:"긴장·스트레스를 \"수행을 돕는 신체 자원\"으로 재해석하였다. (스트레스 긍정 마인드셋)",type:"조절",input:"rating"}
+  ]},
+  C:{id:"C",title:"학습 후 — 평가",icon:"📊",subtitle:"After Learning",color:"#34D399",items:[
+    {no:"20",text:"오늘 학습/연구 목표 달성도는 몇 %인가?",type:"평가",input:"percent",showGoal:true},
+    {no:"21",text:"목표를 100% 달성하지 못했다면 그 이유는 무엇인가?",type:"평가",input:"text",placeholder:"예) 선형대수 증명 부분에서 시간이 오래 걸렸다"},
+    {no:"22",text:"사용한 인지전략이 효과적이었는가?",type:"평가",input:"rating"},
+    {no:"23",text:"오늘의 학습 핵심 내용을 보지 않고 떠올릴 수 있는가? (자기 테스트)",type:"평가",input:"rating"},
+    {no:"24",text:"오늘 학습한 내용을 다른 사람에게 설명할 수 있는가?",type:"평가",input:"rating"},
+    {no:"25",text:"오늘 학습에서 정확한 피드백 루프가 작동했는가? (Deliberate Practice)",type:"전략",input:"rating"},
+    {no:"26",text:"오늘 새롭게 깨달은 점을 기록하세요.",type:"평가",input:"text",placeholder:"예) 열역학 제2법칙이 화학평형에도 적용된다"},
+    {no:"27",text:"오늘 감사 1가지 또는 자기확언을 적어 보세요. (mPFC 활성화)",type:"조절",input:"text",placeholder:"예) 막힌 문제를 끝까지 붙들고 푼 나에게 박수"}
+  ]},
+  D:{id:"D",title:"주간 성찰",icon:"📅",subtitle:"Weekly Reflection — 매주 금요일",color:"#F472B6",items:[
+    {no:"28",text:"이번 주 가장 효과적이었던 인지전략은 무엇인가?",type:"평가",input:"strategy",sub:"효과적이었던 전략을 고르세요."},
+    {no:"29",text:"이번 주 학습/연구에서 가장 어려웠던 점은?",type:"평가",input:"text"},
+    {no:"30",text:"학습 계획(시간·전략)의 정확도가 향상되었는가?",type:"점검",input:"rating"},
+    {no:"31",text:"모르는 것과 아는 것을 정확히 구별할 수 있게 되었는가?",type:"점검",input:"rating"},
+    {no:"32",text:"이번 주 학습의 몰입도는 어떠하였는가?",type:"평가",input:"scale5",lo:"매우 낮음",hi:"완전 몰입"},
+    {no:"33",text:"이번 주 \"다양한 경험\"(분야·방법 교차)을 시도했는가? (Search-and-match)",type:"계획",input:"rating",sub:"Science 2025: 최고 성취자는 다양한 분야 경험을 거침"},
+    {no:"34",text:"이번 주 마음근력(호흡·알아차림·자기확언)을 며칠 실천했는가?",type:"조절",input:"scale5",lo:"0~1일",hi:"매일"}
+  ]},
+  E:{id:"E",title:"R&E / 연구활동",icon:"🔬",subtitle:"Research Metacognition",color:"#FB923C",items:[
+    {no:"R1",text:"연구 질문이 명확하고 구체적으로 정의되었는가?",type:"계획",input:"rating"},
+    {no:"R2",text:"관련 선행연구를 충분히 검토하고 차별점을 파악하였는가?",type:"계획",input:"rating"},
+    {no:"R3",text:"가설이 논리적이고 검증 가능한 형태로 수립되었는가?",type:"계획",input:"rating"},
+    {no:"R4",text:"실험/분석 방법이 가설 검증에 적합하게 설계되었는가?",type:"계획",input:"rating"},
+    {no:"R5",text:"실험 과정에서 변인 통제가 적절히 이루어지고 있는가?",type:"점검",input:"rating"},
+    {no:"R6",text:"데이터 수집 과정에서 오차와 오류를 최소화하고 있는가?",type:"점검",input:"rating"},
+    {no:"R7",text:"예상과 다른 결과의 원인을 체계적으로 분석하였는가?",type:"조절",input:"rating"},
+    {no:"R8",text:"결과가 가설을 지지·반박하는지 논리적으로 해석하였는가?",type:"평가",input:"rating"},
+    {no:"R9",text:"연구의 한계점을 인식하고 후속 방향을 도출하였는가?",type:"평가",input:"rating"},
+    {no:"R10",text:"연구 노트에 오늘의 발견·실패 원인·개선안을 기록하였다.",type:"평가",input:"text"}
+  ]}
+};
+var SEC_ORDER=["quick","A","B","C","D","E"];
+
+/* 인지전략 — '이럴 때 쓰기'(조건적 지식)를 추가 */
+var STRATEGIES=[
+  {no:1,name:"반복하기",cat:"단순 기억",desc:"핵심 내용을 여러 번 읽거나 쓰며 기억에 고정",when:"용어·기호처럼 그대로 외워야 할 때. 이해가 필요한 내용에는 효과가 낮아요."},
+  {no:2,name:"밑줄/강조",cat:"단순 기억",desc:"핵심 개념·공식에 밑줄·형광펜 표시",when:"처음 읽으며 핵심을 고를 때. 다시 볼 때는 자기 질문과 함께 쓰세요."},
+  {no:3,name:"플래시카드",cat:"단순 기억",desc:"앞면 질문, 뒷면 답으로 자기 테스트",when:"정의·단어를 기억하는지 스스로 시험해 볼 때"},
+  {no:4,name:"이미지화",cat:"필수 기억",desc:"추상 개념을 시각적 심상으로 변환",when:"구조·과정이 머릿속에 그려지지 않을 때"},
+  {no:5,name:"연결·유추",cat:"필수 기억",desc:"새 지식을 이미 아는 것과 연결",when:"새 개념이 낯설 때 아는 것에 빗대 보기"},
+  {no:6,name:"마인드맵",cat:"필수 기억",desc:"중심 주제에서 방사형으로 시각화",when:"단원 전체 흐름을 한눈에 볼 때"},
+  {no:7,name:"구조화/개요",cat:"필수 기억",desc:"정보를 위계적으로 분류·조직화",when:"내용이 많아 무엇부터 할지 정리가 필요할 때"},
+  {no:8,name:"자기 질문",cat:"깊은 이해",desc:"학습 내용에 대해 스스로 질문·답",when:"읽고 나서 '왜 그렇지?'를 확인할 때"},
+  {no:9,name:"정교화/설명",cat:"깊은 이해",desc:"내 언어로 바꾸어 설명하기",when:"이해했다고 느껴질 때 진짜인지 확인할 때"},
+  {no:10,name:"비교·대조",cat:"깊은 이해",desc:"유사 개념 간 공통점·차이점 분석",when:"헷갈리는 개념이 둘 이상일 때"},
+  {no:11,name:"오답 분석",cat:"깊은 이해",desc:"틀린 이유를 분석하여 재학습",when:"문제를 틀렸거나 찍어서 맞혔을 때"},
+  {no:12,name:"SQ4R",cat:"깊은 이해",desc:"훑어보기→질문→읽기→성찰→암송→복습",when:"교재 한 절을 처음부터 깊이 읽을 때"},
+  {no:13,name:"가설-실험 설계",cat:"연구활동",desc:"가설을 세우고 검증 가능한 실험 설계",when:"연구 질문을 검증 가능한 형태로 바꿀 때"},
+  {no:14,name:"데이터 해석",cat:"연구활동",desc:"실험 데이터 그래프화·패턴 분석",when:"측정값이 나왔을 때 패턴과 오차를 볼 때"},
+  {no:15,name:"논문 비평적 읽기",cat:"연구활동",desc:"선행연구를 비판적으로 분석·평가",when:"선행연구에서 내 연구의 차별점을 찾을 때"},
+  {no:16,name:"연구 노트 작성",cat:"연구활동",desc:"실험 과정·사고를 체계적으로 기록",when:"실험·분석을 한 날 마무리할 때"}
+];
+var CATS=[["단순 기억","외우기"],["필수 기억","정리하기"],["깊은 이해","이해하기"],["연구활동","연구하기"]];
+var STRAT_BY_NO={};STRATEGIES.forEach(function(s){STRAT_BY_NO[s.no]=s;});
+var STRATEGY_FIELDS=[];SEC_ORDER.forEach(function(id){SECTIONS[id].items.forEach(function(it){if(it.input==="strategy")STRATEGY_FIELDS.push("A_"+id+"-"+it.no);});});
+
+var TYPES=["계획","전략","점검","평가","조절"];
+var TM={"계획":{c:"#60A5FA",i:"📋"},"전략":{c:"#818CF8",i:"🧩"},"점검":{c:"#C084FC",i:"🔍"},"평가":{c:"#34D399",i:"📊"},"조절":{c:"#FBBF24",i:"🔄"}};
+var RO=[{v:2,l:"○",d:"그렇다",c:"#34D399"},{v:1,l:"△",d:"보통",c:"#FBBF24"},{v:0,l:"✕",d:"아니다",c:"#F87171"}];
+var KIND={rating:"○ △ ✕",scale5:"1~5",percent:"%",text:"서술",strategy:"전략 선택",plan:"실행 계획"};
+
+/* 학번: 1학년 4반 16번 → 1416. 0000은 시연·연습용(별도 시트에 저장) */
+var CLASS_RE=/^(0000|[1-3][1-9](0[1-9]|[1-4][0-9]))$/;
+var PIN_RE=/^[0-9]{4}$/;
+/* "1-4-16", "1ㅡ4ㅡ2", "1 4 2" 처럼 나눠 쓴 학번을 1416·1402로 바꿈 */
+function normClass(v){var s=String(v||"").trim(),m=s.match(/^(\d)\D+(\d)\D+(\d{1,2})$/);if(m)return m[1]+m[2]+m[3].padStart(2,"0");return s.replace(/[^0-9]/g,"").slice(0,4);}
+/* 학생 보호: 위험 신호 표현 (서버 Code.gs와 같은 목록) */
+var RISK_RE=/자살|자해|죽고\s*싶|죽어\s*버리|죽을\s*래|사라지고\s*싶|없어지고\s*싶|살기\s*싫|그만\s*살|자퇴|극단적\s*선택/;
+
+var ITEM_TIPS={
+  "quick-Q0":"다짐을 지키기 어려웠다면 '언제'를 더 구체적인 상황으로 바꿔 보세요. (예: 저녁 자습 시작 종이 울리면)",
+  "quick-Q1":"시작 전에 '무엇을, 어디까지'를 한 줄로 적고 시작하세요. (예: 일반물리 3.2절 예제 1~4번)",
+  "quick-Q3":"공부 중간에 책을 덮고 핵심을 30초 동안 말로 설명해 보세요. 막히는 곳이 다시 볼 곳이에요.",
+  "quick-Q6":"집중이 깨졌다고 알아차리면 바로 1분 호흡(4초 들이쉬고 6초 내쉬기)을 하고 다시 시작해 보세요.",
+  "quick-Q8":"문제를 풀면 바로 정답·해설과 비교하고, 틀린 문제는 하루 뒤에 다시 풀어 보세요.",
+  "A-10":"공부 시작 전 1분만 호흡에 집중해 보세요. 이 앱의 '1분 호흡' 버튼을 써도 좋아요."
+};
+var TYPE_TIPS={
+  "계획":"시작 전에 목표·시간·확인 기준을 한 줄씩 적어 보세요. (예: 45분 동안 예제 4개, 다 풀면 해설과 비교)",
+  "전략":"오늘 내용이 외우기형인지 이해형인지 먼저 정하고, 이해형이면 8.자기 질문이나 9.설명하기를 골라 보세요.",
+  "점검":"공부 중간에 한 번 멈추고 '지금 설명할 수 있나?'를 확인해 보세요.",
+  "평가":"끝나고 나서 정답·해설과 내 풀이를 나란히 놓고 차이를 한 줄로 적어 보세요.",
+  "조절":"막히거나 집중이 깨지면 1분 호흡 후, 다른 전략으로 바꿔 다시 시도해 보세요."
+};
+var REC_BY_TYPE={"계획":[7,12,6],"전략":[8,9,5],"점검":[8,9,11],"평가":[11,9,14],"조절":[11,8,10]};
+
+/* ───────── 유틸 ───────── */
+function uid(){if(window.crypto&&crypto.randomUUID)return crypto.randomUUID();return "id-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,10);}
+function keyOf(it){return it.sid+"-"+it.no;}
+function planText(p){if(!p||typeof p!=="object")return "";var w=String(p.w||"").trim(),d=String(p.d||"").trim();if(!d&&!w)return "";return (w?w+" → ":"")+d;}
+function answered(it,v){
+  if(v===undefined||v===null)return false;
+  switch(it.input){
+    case "rating":case "scale5":case "percent":return typeof v==="number";
+    case "text":return typeof v==="string"&&v.trim().length>0;
+    case "strategy":return Array.isArray(v)&&v.length>0;
+    case "plan":return !!(v&&String(v.d||"").trim());
+  }
+  return false;
+}
+/* v4 채점: ○△✕·1~5 문항만 점수에 넣음. 서술·전략 선택은 '했다'만으로 만점이 되지 않도록 제외 */
+function score01(it,v){
+  if(it.input==="rating")return typeof v==="number"?v/2:null;
+  if(it.input==="scale5")return typeof v==="number"?(v-1)/4:null;
+  return null;
+}
+function thinText(s){var t=String(s||"").trim();if(!t)return false;return t.length<5||!/[가-힣A-Za-z0-9]{2}/.test(t.replace(/\s/g,""));}
+function gradeOf(s){if(s==null)return "-";return s>=80?"A":s>=60?"B":s>=40?"C":"D";}
+function levelOf(s){
+  if(s==null)return {l:"점수 없음",c:"#a3b1c6",m:"○△✕ 문항에 답하면 점수가 나와요."};
+  if(s>=80)return {l:"잘 쓰고 있어요",c:"#34D399",m:"메타인지 전략을 잘 활용하고 있어요. 아래 '다음 한 걸음'으로 한 단계 더 가 보세요."};
+  if(s>=60)return {l:"자리 잡는 중",c:"#60A5FA",m:"기본은 갖추었어요. 약한 요소 하나만 골라 이번 주에 연습해 보세요."};
+  if(s>=40)return {l:"연습이 필요해요",c:"#FBBF24",m:"계획-점검-평가-조절 중 빠진 단계가 있어요. Quick-Check를 일주일에 두 번 해 보세요."};
+  return {l:"시작 단계",c:"#F87171",m:"괜찮아요. 오늘은 '다음 한 걸음' 하나만 실천해 보세요."};
+}
+function fmtDate(iso){var d=new Date(iso);if(isNaN(d.getTime()))return "-";function p(n){return String(n).padStart(2,"0");}return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate())+" "+p(d.getHours())+":"+p(d.getMinutes());}
+function fmtShort(iso){var d=new Date(iso);return isNaN(d.getTime())?"":(d.getMonth()+1)+"/"+d.getDate();}
+function mean(a){return a.length?a.reduce(function(x,y){return x+y;},0)/a.length:null;}
+function weekStart(t){var d=new Date(t);d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d;}
+function weekStats(recs){
+  if(!recs.length)return {thisWeek:0,streak:0,daysSince:null};
+  var keys={};recs.forEach(function(r){var w=weekStart(r.when);if(!isNaN(w))keys[w.getTime()]=1;});
+  var cur=weekStart(Date.now()),k=new Date(cur);
+  if(!keys[k.getTime()])k.setDate(k.getDate()-7);
+  var streak=0;while(keys[k.getTime()]){streak++;k.setDate(k.getDate()-7);}
+  var thisWeek=recs.filter(function(r){return weekStart(r.when).getTime()===cur.getTime();}).length;
+  var last=Math.max.apply(null,recs.map(function(r){return new Date(r.when).getTime()||0;}));
+  return {thisWeek:thisWeek,streak:streak,daysSince:Math.floor((Date.now()-last)/864e5)};
+}
+var toastTimer=null;
+function toast(msg,type){var t=document.getElementById("toast");t.textContent=msg;t.className="toast show "+(type||"");clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.className="toast";},3600);}
+
+/* ───────── 백엔드 ───────── */
+var backendCache=null;
+function checkBackend(){
+  if(backendCache&&backendCache.ok)return Promise.resolve(backendCache);
+  return fetch(API,{method:"GET",redirect:"follow"}).then(function(r){return r.text();}).then(function(txt){
+    var j;try{j=JSON.parse(txt);}catch(e){return {ok:false,err:"서버가 JSON 대신 다른 응답을 돌려줬어요. Apps Script 배포(액세스: 모든 사용자)를 확인해 주세요."};}
+    var major=parseInt(String(j.version||"0").split(".")[0],10)||0;
+    if(major<BACKEND_MAJOR)return {ok:false,err:"서버(Apps Script)가 이전 버전("+(j.version||"?")+")이에요. checklist-app-v4/Code.gs로 바꾼 뒤 재배포해 주세요. (이전 서버에는 비밀번호가 그대로 저장될 수 있어 보내지 않았어요.)"};
+    backendCache={ok:true,version:j.version};return backendCache;
+  });
+}
+function post(body){
+  return fetch(API,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(body),redirect:"follow"})
+    .then(function(r){return r.text();})
+    .then(function(txt){try{return JSON.parse(txt);}catch(e){throw new Error("서버 응답을 읽지 못했어요.");}});
+}
+/* 서버 행 → 공통 기록 형식 */
+function fromRow(r){
+  var types={};try{types=typeof r.typeScores==="string"?JSON.parse(r.typeScores||"{}"):(r.typeScores||{});}catch(e){}
+  var strats=[];STRATEGY_FIELDS.forEach(function(f){var v=r[f];if(v===undefined||v===null||v==="")return;String(v).split(",").forEach(function(x){var n=Number(String(x).trim());if(n>0&&STRAT_BY_NO[n])strats.push(n);});});
+  var ach=(r.achieve!==undefined&&r.achieve!==""&&r.achieve!==null)?Number(r.achieve):((r["A_quick-Q4"]!==undefined&&r["A_quick-Q4"]!=="")?Number(r["A_quick-Q4"]):null);
+  var sc=(r.totalScore===""||r.totalScore===undefined||r.totalScore===null)?null:Number(r.totalScore);
+  return {id:r.submissionId||"",when:r.timestamp||r._savedAt||"",score:isNaN(sc)?null:sc,sv:Number(r.scoreVersion)||1,types:types,sections:String(r.sections||""),subject:String(r.subject||""),strats:strats,plan:String(r["A_quick-Q5"]||""),achieve:(ach===null||isNaN(ach))?null:ach};
+}
+function myLog(name,classNo){return store.get(K.log,[]).filter(function(r){return r.name===name&&r.classNo===classNo;});}
+
+/* ───────── 계산 ───────── */
+function compute(items,resp){
+  var types={},secs={},sum=0,n=0,all=[],weak=[];
+  items.forEach(function(it){
+    var v=score01(it,resp[keyOf(it)]);if(v===null)return;
+    sum+=v;n++;all.push(v);
+    (types[it.type]=types[it.type]||{t:0,m:0});types[it.type].t+=v;types[it.type].m++;
+    (secs[it.sid]=secs[it.sid]||{t:0,m:0});secs[it.sid].t+=v;secs[it.sid].m++;
+    if(v<1)weak.push({it:it,v:v});
+  });
+  var rd={},ss={};Object.keys(types).forEach(function(k){rd[k]=types[k].t/types[k].m;});Object.keys(secs).forEach(function(k){ss[k]=secs[k].t/secs[k].m;});
+  weak.sort(function(a,b){return a.v-b.v;});
+  var pcts=items.filter(function(it){return it.input==="percent"&&typeof resp[keyOf(it)]==="number";}).map(function(it){return resp[keyOf(it)];});
+  var texts=[];Object.keys(resp).forEach(function(k){var v=resp[k];if(typeof v==="string")texts.push(v);else if(v&&typeof v==="object"&&!Array.isArray(v))texts.push(planText(v));});
+  return {
+    rd:rd,ss:ss,score:n?sum/n*100:null,scoredN:n,
+    unanswered:items.filter(function(it){return !answered(it,resp[keyOf(it)]);}).length,
+    achieve:pcts.length?mean(pcts):null,
+    allMax:n>=4&&all.every(function(v){return v===1;}),
+    risk:texts.some(function(t){return RISK_RE.test(t);}),
+    weak:weak
+  };
+}
+
+/* ───────── 캘린더 알림(.ics) ───────── */
+function icsEsc(s){return String(s).replace(/\\/g,"\\\\").replace(/;/g,"\\;").replace(/,/g,"\\,").replace(/\n/g,"\\n");}
+function makeICS(day,time){
+  var parts=String(time||"17:00").split(":"),hh=Number(parts[0])||17,mm=Number(parts[1])||0;
+  var now=new Date(),d=new Date(now);d.setHours(hh,mm,0,0);
+  var add=(day-d.getDay()+7)%7;if(add===0&&d<=now)add=7;d.setDate(d.getDate()+add);
+  function p(n){return String(n).padStart(2,"0");}
+  var local=d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+"T"+p(hh)+p(mm)+"00";
+  var stamp=now.toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"");
+  var url=/^https?:/.test(location.href)?location.href.split("#")[0]:"";
+  return ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//DJSHS//Metacognition Checklist v4//KO","CALSCALE:GREGORIAN",
+    "BEGIN:VTIMEZONE","TZID:Asia/Seoul","BEGIN:STANDARD","DTSTART:19700101T000000","TZOFFSETFROM:+0900","TZOFFSETTO:+0900","TZNAME:KST","END:STANDARD","END:VTIMEZONE",
+    "BEGIN:VEVENT","UID:"+uid()+"@metacog-checklist","DTSTAMP:"+stamp,"DTSTART;TZID=Asia/Seoul:"+local,"DURATION:PT10M","RRULE:FREQ=WEEKLY",
+    "SUMMARY:"+icsEsc("메타인지 Quick-Check (2분)"),"DESCRIPTION:"+icsEsc("지난 다짐을 지켰는지 돌아보고 Quick-Check를 해 보세요."+(url?"\n"+url:"")),
+    "BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:"+icsEsc("Quick-Check 할 시간"),"TRIGGER:PT0M","END:VALARM",
+    "END:VEVENT","END:VCALENDAR",""].join("\r\n");
+}
+function downloadICS(day,time){
+  var blob=new Blob([makeICS(day,time)],{type:"text/calendar;charset=utf-8"});
+  var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="메타인지-QuickCheck-알림.ics";
+  document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1500);
+}
+
+/* ═══════════ 차트·작은 컴포넌트 ═══════════ */
+function Bars(props){
+  return h("div",{className:"bars"},props.rows.map(function(r){
+    var v=Math.max(0,Math.min(1,r.value||0));
+    return h("div",{key:r.label,className:"bar-row"},
+      h("div",{className:"bar-lbl",title:r.label},r.label),
+      h("div",{className:"bar-track",role:"img","aria-label":r.label+" "+(r.right!=null?r.right:Math.round(v*100)+"%")},
+        h("div",{className:"bar-fill",style:{width:(v*100)+"%",background:r.color||"#818cf8"}})),
+      h("div",{className:"bar-val"},r.right!=null?r.right:Math.round(v*100)+"%"));
+  }));
+}
+
+function TrendLine(props){
+  var recs=props.recs.filter(function(r){return r.score!=null;});if(recs.length<2)return null;
+  var W=480,H=170,pl=30,pr=14,pt=14,pb=26,w=W-pl-pr,hh=H-pt-pb,n=recs.length;
+  function x(i){return pl+(n>1?i/(n-1)*w:w/2);}function y(v){return pt+(1-Math.max(0,Math.min(100,v))/100)*hh;}
+  var path=recs.map(function(r,i){return (i?"L":"M")+x(i).toFixed(1)+","+y(r.score).toFixed(1);}).join(" ");
+  var hasOld=recs.some(function(r){return r.sv<2;});
+  return h("div",null,
+    h("svg",{width:"100%",viewBox:"0 0 "+W+" "+H,role:"img","aria-label":"회차별 점수 추세, "+n+"회"},
+      [0,50,100].map(function(g){return h("g",{key:g},
+        h("line",{x1:pl,x2:pl+w,y1:y(g),y2:y(g),stroke:"rgba(255,255,255,.08)",strokeDasharray:g===50?"3,4":""}),
+        h("text",{x:pl-6,y:y(g)+4,textAnchor:"end",fill:"#a3b1c6",fontSize:11},g));}),
+      h("path",{d:path,fill:"none",stroke:"#818cf8",strokeWidth:2,strokeLinejoin:"round",strokeLinecap:"round"}),
+      recs.map(function(r,i){var old=r.sv<2;return h("circle",{key:i,cx:x(i),cy:y(r.score),r:5,fill:old?"#0f172a":"#a5b4fc",stroke:old?"#a5b4fc":"#0f172a",strokeWidth:2},
+        h("title",null,fmtDate(r.when)+" · "+Math.round(r.score)+"점"+(old?" (v3 계산)":"")));}),
+      [0,n-1].concat(n>4?[Math.floor((n-1)/2)]:[]).map(function(i){return h("text",{key:"l"+i,x:x(i),y:H-6,textAnchor:i===0?"start":i===n-1?"end":"middle",fill:"#a3b1c6",fontSize:11},fmtShort(recs[i].when));})),
+    hasOld&&h("div",{className:"legend"},
+      h("span",null,h("i",{style:{background:"#a5b4fc"}}),"v4 계산"),
+      h("span",null,h("i",{style:{background:"#0f172a",border:"2px solid #a5b4fc",width:"10px",height:"10px"}}),"v3 계산 (서술·전략 입력도 만점 처리돼 점수가 높게 나옴)")));
+}
+
+function RatingIn(p){
+  return h("div",{className:"seg",role:"radiogroup","aria-label":p.label},RO.map(function(o){
+    var on=p.value===o.v;
+    return h("button",{key:o.v,type:"button",role:"radio","aria-checked":on,className:"seg-btn",style:on?{borderColor:o.c,background:o.c+"24",color:o.c}:null,
+      onClick:function(){p.onChange(on?null:o.v);}},h("span",{className:"seg-sym","aria-hidden":true},o.l),h("span",{className:"seg-txt"},o.d));
+  }));
+}
+function Scale5In(p){
+  return h("div",null,
+    h("div",{className:"seg",role:"radiogroup","aria-label":p.label},[1,2,3,4,5].map(function(n){
+      var on=p.value===n,c=n<=2?"#F87171":n===3?"#FBBF24":"#34D399";
+      return h("button",{key:n,type:"button",role:"radio","aria-checked":on,"aria-label":n+"점",className:"seg-btn",style:on?{borderColor:c,background:c+"24",color:c}:null,onClick:function(){p.onChange(on?null:n);}},h("span",{className:"seg-sym"},n));
+    })),
+    (p.lo||p.hi)&&h("div",{className:"scale-ends"},h("span",null,"1 "+(p.lo||"")),h("span",null,(p.hi||"")+" 5")));
+}
+function PercentIn(p){
+  var has=typeof p.value==="number",val=has?p.value:50,c=!has?"#a3b1c6":val>=80?"#34D399":val>=50?"#FBBF24":"#F87171";
+  return h("div",null,
+    h("div",{className:"pct-top"},
+      h("input",{type:"range",min:0,max:100,step:5,value:val,className:has?"":"untouched","aria-label":p.label,"aria-valuetext":has?val+"%":"아직 선택 안 함",
+        onChange:function(e){p.onChange(Number(e.target.value));},onClick:function(e){if(!has)p.onChange(Number(e.target.value));}}),
+      h("span",{className:"pct-val",style:{color:c}},has?val+"%":"—")),
+    h("div",{className:"quick-pcts"},[0,25,50,75,100].map(function(v){return h("button",{key:v,type:"button","aria-pressed":p.value===v,onClick:function(){p.onChange(v);}},v+"%");})),
+    !has&&h("div",{className:"hint mt8"},"슬라이더를 움직이거나 버튼을 눌러 선택하세요."));
+}
+function TextIn(p){
+  var thin=thinText(p.value);
+  return h("div",null,
+    h("textarea",{className:"field",rows:3,maxLength:500,value:p.value||"",placeholder:p.placeholder||"자유롭게 작성하세요","aria-label":p.label,onChange:function(e){p.onChange(e.target.value);}}),
+    thin&&h("div",{className:"nudge"},"조금만 더 구체적으로 써 볼까요? 나중에 돌아볼 때 도움이 돼요."));
+}
+function PlanIn(p){
+  var v=p.value||{};function set(k,x){var o={w:v.w||"",d:v.d||""};o[k]=x;p.onChange(o);}
+  return h("div",null,
+    h("label",{className:"lbl"},"언제 (상황)"),
+    h("input",{className:"field",value:v.w||"",maxLength:120,placeholder:"예) 폰 알림이 울리면 / 자습 시작 종이 치면",onChange:function(e){set("w",e.target.value);}}),
+    h("label",{className:"lbl"},"무엇을 (행동)"),
+    h("input",{className:"field",value:v.d||"",maxLength:160,placeholder:"예) 폰을 가방에 넣고 25분 타이머를 켠다",onChange:function(e){set("d",e.target.value);},style:{marginBottom:0}}),
+    v.d&&!String(v.w||"").trim()&&h("div",{className:"nudge"},"'언제'를 정하면 실천할 확률이 높아져요."));
+}
+function StratIn(p){
+  var sel=Array.isArray(p.value)?p.value:[];
+  function toggle(no){p.onChange(sel.indexOf(no)>=0?sel.filter(function(n){return n!==no;}):sel.concat([no]));}
+  var onlySurface=sel.length>0&&sel.every(function(n){return STRAT_BY_NO[n].cat==="단순 기억";});
+  return h("div",null,
+    CATS.map(function(c){return h("div",{key:c[0]},
+      h("div",{className:"strat-cat"},c[0]," ",h("span",null,"· "+c[1])),
+      h("div",{className:"chips"},STRATEGIES.filter(function(s){return s.cat===c[0];}).map(function(s){
+        return h("button",{key:s.no,type:"button",className:"chip","aria-pressed":sel.indexOf(s.no)>=0,title:s.desc,onClick:function(){toggle(s.no);}},h("b",null,s.no),s.name);})));}),
+    sel.length>0&&h("div",{className:"picked"},
+      h("div",{style:{color:"#a5b4fc",fontWeight:700,marginTop:0}},"고른 전략 · 이럴 때 쓰기"),
+      sel.map(function(no){var s=STRAT_BY_NO[no];return h("div",{key:no},"• "+s.no+". "+s.name+" — "+s.when);})),
+    onlySurface&&h("div",{className:"nudge"},"외우기 전략만 골랐어요. 이해가 필요한 내용이었다면 8.자기 질문이나 9.정교화/설명을 하나 더해 보세요."));
+}
+
+function Breath(p){
+  var _t=useState(0),t=_t[0],setT=_t[1];var _g=useState(false),go=_g[0],setGo=_g[1];
+  useEffect(function(){var r=requestAnimationFrame(function(){setGo(true);});var id=setInterval(function(){setT(function(x){return x>=60?x:x+1;});},1000);
+    function k(e){if(e.key==="Escape")p.onClose();}window.addEventListener("keydown",k);
+    return function(){cancelAnimationFrame(r);clearInterval(id);window.removeEventListener("keydown",k);};},[]);
+  var done=t>=60,ph=(t%10)<4?"in":"out";
+  return h("div",{className:"overlay",role:"dialog","aria-modal":true,"aria-label":"1분 호흡"},
+    h("div",{className:"breath-box"},
+      h("div",{className:"breath-circle "+(go&&!done?ph:""),"aria-hidden":true}),
+      h("div",{className:"breath-phase"},done?"잘했어요":(ph==="in"?"코로 들이쉬기 · 4초":"입으로 길게 내쉬기 · 6초")),
+      h("div",{className:"hint"},done?"몸의 감각이 어떤지 알아차려 보세요. 해 봤다면 문항에 표시해 주세요.":"남은 시간 "+(60-t)+"초 · 생각이 흐트러지면 알아차리고 숨으로 돌아오세요"),
+      h("button",{type:"button",className:"btn btn-ghost mt12",autoFocus:true,onClick:p.onClose},done?"닫기":"그만하기")));
+}
+
+function Reminder(){
+  var saved=store.get(K.remind,{day:5,time:"17:00"});
+  var _d=useState(saved.day),day=_d[0],setDay=_d[1];var _t=useState(saved.time),time=_t[0],setTime=_t[1];
+  var days=["일","월","화","수","목","금","토"];
+  return h("div",{className:"card"},
+    h("div",{className:"h3"},"⏰ 다음 체크 알림 만들기"),
+    h("div",{className:"hint mb12"},"한 번 해 보고 끝나지 않도록, 매주 같은 시간에 휴대폰 캘린더가 알려 주게 하세요. 받은 파일을 열면 캘린더에 추가돼요."),
+    h("div",{className:"row"},
+      h("select",{className:"field","aria-label":"요일",value:day,onChange:function(e){setDay(Number(e.target.value));}},days.map(function(d,i){return h("option",{key:i,value:i},"매주 "+d+"요일");})),
+      h("input",{className:"field",type:"time","aria-label":"시각",value:time,onChange:function(e){setTime(e.target.value);}})),
+    h("button",{type:"button",className:"btn btn-soft",onClick:function(){store.set(K.remind,{day:day,time:time});downloadICS(day,time);toast("캘린더 파일을 받았어요. 열어서 추가해 주세요.","success");}},"📅 캘린더에 추가할 파일 받기"));
+}
+
+function SafetyCard(){
+  return h("div",{className:"banner safe",role:"note"},
+    h("b",null,"요즘 많이 힘든가요? "),"적어 준 내용을 보니 마음이 쓰여요. 혼자 견디지 않아도 괜찮아요.",
+    h("div",{style:{marginTop:"8px"}},"• 담임·상담 선생님, Wee클래스에 이야기해 주세요."),
+    h("div",null,"• 청소년상담 ",h("b",null,"1388")," (전화·문자 #1388·카카오톡, 24시간)"),
+    h("div",null,"• 자살예방 상담전화 ",h("b",null,"109")," (24시간) · 위급하면 112 / 119"),
+    API&&h("div",{className:"hint mt8"},"학생 보호를 위해 이 내용은 담당 선생님께 전달될 수 있어요."));
+}
+
+/* ═══════════ APP ═══════════ */
+function App(){
+  var prof=store.get(K.profile,{name:"",classNo:"",remember:true,subject:""});
+  var _s=useState("home"),screen=_s[0],setScreen=_s[1];
+  var _n=useState(prof.name||""),name=_n[0],setName=_n[1];
+  var _c=useState(prof.classNo||""),classNo=_c[0],setClassNo=_c[1];
+  var _p=useState(""),pin=_p[0],setPin=_p[1];
+  var _sj=useState(prof.subject||""),subject=_sj[0],setSubject=_sj[1];
+  var _r=useState(prof.remember!==false),remember=_r[0],setRemember=_r[1];
+  var _sel=useState(["quick"]),selSec=_sel[0],setSelSec=_sel[1];
+  var _cur=useState(0),curSec=_cur[0],setCurSec=_cur[1];
+  var _resp=useState({}),resp=_resp[0],setResp=_resp[1];
+  var _sid=useState(""),subId=_sid[0],setSubId=_sid[1];
+  var _sv=useState("idle"),saveState=_sv[0],setSaveState=_sv[1];
+  var _st=useState(false),showStrat=_st[0],setShowStrat=_st[1];
+  var _b=useState(false),breath=_b[0],setBreath=_b[1];
+  var _hist=useState(null),hist=_hist[0],setHist=_hist[1];
+  var _tried=useState(false),tried=_tried[0],setTried=_tried[1];
+  var _tick=useState(0),setTick=_tick[1];
+  var topRef=useRef(null);
+
+  var nameT=name.trim(),clsT=classNo.trim();
+  var errs={name:nameT.length<2?"이름을 입력해 주세요.":"",cls:!CLASS_RE.test(clsT)?"학번 4자리를 입력해 주세요. (예: 1학년 4반 16번 → 1416)":"",pin:API&&!PIN_RE.test(pin)?"숫자 4자리를 입력해 주세요.":""};
+  var log=remember?myLog(nameT,clsT):[];
+  var prevPlan=(function(){for(var i=log.length-1;i>=0;i--){if(log[i].plan&&log[i].id!==subId)return log[i];}return null;})();
+  var active=SEC_ORDER.filter(function(id){return selSec.indexOf(id)>=0;}).map(function(id){return SECTIONS[id];});
+  var items=[];active.forEach(function(s){s.items.forEach(function(it){if(it.needsPrev&&!prevPlan)return;items.push(Object.assign({},it,{sid:s.id}));});});
+  var done=items.filter(function(it){return answered(it,resp[keyOf(it)]);}).length;
+
+  useEffect(function(){window.scrollTo(0,0);},[screen,curSec]);
+  /* 작성 중 자동 저장 */
+  useEffect(function(){if(screen==="checklist"||screen==="results"){if(saveState==="idle"||saveState==="saving")store.set(K.draft,{name:nameT,classNo:clsT,selSec:selSec,resp:resp,subId:subId,curSec:curSec,ts:Date.now()});}},[resp,selSec,curSec,screen]);
+
+  function setAns(k,v){setResp(function(p){var o=Object.assign({},p);if(v===null||v===undefined)delete o[k];else o[k]=v;return o;});if(saveState!=="idle")setSaveState("idle");}
+  function persistProfile(){if(remember)store.set(K.profile,{name:nameT,classNo:clsT,remember:true,subject:subject.trim()});else{store.set(K.profile,{remember:false});}}
+  function validate(){setTried(true);if(errs.name||errs.cls||errs.pin){toast(errs.name||errs.cls||("기록 비밀번호: "+errs.pin),"error");return false;}return true;}
+  function start(){if(!selSec.length||!validate())return;persistProfile();setResp({});setCurSec(0);setSubId(uid());setSaveState("idle");setScreen("checklist");}
+  function resume(d){setSelSec(d.selSec);setResp(d.resp||{});setSubId(d.subId||uid());setCurSec(d.curSec||0);setSaveState("idle");setName(d.name||name);setClassNo(d.classNo||classNo);setScreen("checklist");}
+
+  function buildPayload(r){
+    var o={action:"submit",submissionId:subId,timestamp:new Date().toISOString(),appVersion:APP_VERSION,scoreVersion:SCORE_VERSION,
+      school:CFG.SCHOOL_NAME||"",name:nameT,classNo:clsT,subject:subject.trim(),sections:active.map(function(s){return s.id;}).join(","),
+      totalScore:r.score==null?"":Math.round(r.score),grade:gradeOf(r.score),typeScores:JSON.stringify(r.rd),sectionScores:JSON.stringify(r.ss),
+      achieve:r.achieve==null?"":Math.round(r.achieve),unanswered:r.unanswered,allMax:r.allMax?"Y":"",prevPlan:prevPlan&&resp["quick-Q0"]!==undefined?prevPlan.plan:""};
+    Object.keys(resp).forEach(function(k){var v=resp[k];if(v===null||v===undefined)return;
+      o["A_"+k]=Array.isArray(v)?v.join(","):(typeof v==="object"?planText(v):v);});
+    return o;
+  }
+  function logRecord(r){
+    if(!remember)return;
+    var strats=[];Object.keys(resp).forEach(function(k){if(Array.isArray(resp[k]))strats=strats.concat(resp[k]);});
+    var rec={id:subId,name:nameT,classNo:clsT,when:new Date().toISOString(),score:r.score==null?null:Math.round(r.score),sv:SCORE_VERSION,types:r.rd,
+      sections:active.map(function(s){return s.id;}).join(","),subject:subject.trim(),strats:strats,plan:planText(resp["quick-Q5"]),achieve:r.achieve==null?null:Math.round(r.achieve)};
+    var all=store.get(K.log,[]).filter(function(x){return x.id!==subId;});all.push(rec);store.set(K.log,all.slice(-120));
+  }
+  function save(r){
+    var payload=buildPayload(r);
+    if(!API){logRecord(r);store.del(K.draft);setSaveState("local");toast("테스트 모드: 이 기기에만 저장했어요.","success");return;}
+    setSaveState("saving");
+    checkBackend().then(function(be){
+      if(!be.ok){setSaveState("idle");toast(be.err,"error");return;}
+      return post(Object.assign({},payload,{pin:pin})).then(function(j){
+        if(j.ok){logRecord(r);store.del(K.draft);setSaveState("saved");toast(j.registered?"저장했어요. 기록 비밀번호도 등록됐어요.":"저장했어요. 수고했어요! 🎉","success");}
+        else{setSaveState("idle");toast("저장하지 못했어요: "+(j.error||"알 수 없는 오류"),"error");}
+      });
+    }).catch(function(){
+      var q=store.get(K.queue,[]).filter(function(x){return x.submissionId!==payload.submissionId;});q.push(payload);store.set(K.queue,q);
+      logRecord(r);store.del(K.draft);setSaveState("queued");toast("인터넷 연결이 불안정해 이 기기에 보관했어요. 처음 화면에서 다시 보낼 수 있어요.","error");
+    });
+  }
+  function flushQueue(){
+    if(!validate())return;
+    var q=store.get(K.queue,[]),mine=q.filter(function(x){return x.name===nameT&&x.classNo===clsT;});if(!mine.length)return;
+    checkBackend().then(function(be){
+      if(!be.ok){toast(be.err,"error");return;}
+      var left=q.filter(function(x){return !(x.name===nameT&&x.classNo===clsT);}),okN=0,errMsg="";
+      return mine.reduce(function(pr,item){return pr.then(function(){return post(Object.assign({},item,{pin:pin})).then(function(j){if(j.ok)okN++;else{left.push(item);errMsg=j.error||"";}}).catch(function(){left.push(item);});});},Promise.resolve())
+        .then(function(){store.set(K.queue,left);setTick(Date.now());toast(okN+"건 보냈어요."+(left.length?" 남은 기록: "+left.length+"건 "+errMsg:""),okN?"success":"error");});
+    }).catch(function(){toast("아직 인터넷에 연결되지 않았어요.","error");});
+  }
+  function openHistory(){
+    if(!validate())return;persistProfile();
+    setScreen("history");setHist({loading:true});
+    var local=myLog(nameT,clsT);
+    if(!API){setHist({source:"local",recs:local});return;}
+    checkBackend().then(function(be){
+      if(!be.ok){setHist({source:"local",recs:local,warn:be.err});return;}
+      return post({action:"history",name:nameT,classNo:clsT,pin:pin}).then(function(j){
+        if(j.ok&&Array.isArray(j.history)){var recs=j.history.map(fromRow).sort(function(a,b){return new Date(a.when)-new Date(b.when);});setHist({source:"server",recs:recs});}
+        else setHist({error:j.error||"조회하지 못했어요."});
+      });
+    }).catch(function(){setHist({source:"local",recs:local,warn:"서버에 연결하지 못해 이 기기에 저장된 기록만 보여 줘요."});});
+  }
+
+  var content=null;
+  if(screen==="home")content=Home();
+  else if(screen==="checklist")content=Checklist();
+  else if(screen==="results")content=Results();
+  else if(screen==="history")content=History();
+  return h(React.Fragment,null,h("div",{className:"wrap",ref:topRef},content),breath&&h(Breath,{onClose:function(){setBreath(false);}}));
+
+  /* ─── HOME ─── */
+  function Home(){
+    var draft=store.get(K.draft,null);
+    var showDraft=draft&&draft.resp&&Object.keys(draft.resp).length>0&&Date.now()-(draft.ts||0)<3*864e5;
+    var queue=store.get(K.queue,[]).filter(function(x){return x.name===nameT&&x.classNo===clsT;});
+    var ws=weekStats(log);
+    var nQ=active.reduce(function(a,s){return a+s.items.filter(function(it){return !(it.needsPrev&&!prevPlan);}).length;},0);
+    return h(React.Fragment,null,
+      h("div",{className:"center fade",style:{marginBottom:"24px"}},
+        h("div",{style:{fontSize:"48px"},"aria-hidden":true},"🧠"),
+        h("h1",{className:"h1"},"메타인지 전략 체크리스트"),
+        h("p",{className:"hint",style:{marginTop:"4px"}},"대전과학고등학교 · v4")),
+      !API&&h("div",{className:"banner warn"},h("b",null,"테스트 모드"),": 서버 주소(config.js)가 비어 있어 기록이 이 기기에만 저장돼요."),
+      log.length>0&&h("div",{className:"card fade"},
+        h("div",{className:"h3"},nameT+"님의 체크 현황"),
+        h("div",{className:"tiles",style:{marginBottom:0}},
+          h("div",{className:"tile"},h("div",{className:"v"},log.length),h("div",{className:"k"},"전체")),
+          h("div",{className:"tile"},h("div",{className:"v"},ws.thisWeek),h("div",{className:"k"},"이번 주")),
+          h("div",{className:"tile"},h("div",{className:"v"},ws.streak),h("div",{className:"k"},"연속 주")),
+          h("div",{className:"tile"},h("div",{className:"v"},ws.daysSince==null?"-":ws.daysSince===0?"오늘":ws.daysSince+"일"),h("div",{className:"k"},"마지막 체크"))),
+        ws.daysSince!=null&&ws.daysSince>=7&&h("div",{className:"nudge"},"마지막 체크 후 "+ws.daysSince+"일이 지났어요. 오늘 2분만 해 볼까요?"),
+        prevPlan&&h("div",{className:"quote mt12",style:{marginBottom:0}},"지난 다짐: "+prevPlan.plan)),
+      showDraft&&h("div",{className:"banner info"},"작성하다 만 체크리스트가 있어요 ("+fmtDate(draft.ts)+").",
+        h("div",{className:"row mt8"},
+          h("button",{type:"button",className:"btn-sm btn-soft",onClick:function(){resume(draft);}},"이어서 하기"),
+          h("button",{type:"button",className:"btn-sm btn-ghost",onClick:function(){store.del(K.draft);setTick(Date.now());}},"지우기"))),
+      queue.length>0&&API&&h("div",{className:"banner warn"},"보내지 못하고 이 기기에 보관된 기록이 "+queue.length+"건 있어요.",
+        h("div",{className:"mt8"},h("button",{type:"button",className:"btn-sm btn-soft",onClick:flushQueue},"지금 보내기"))),
+      h("div",{className:"card fade"},
+        h("label",{className:"lbl",htmlFor:"f-name"},"이름"),
+        h("input",{id:"f-name",className:"field",value:name,autoComplete:"name",placeholder:"이름","aria-invalid":tried&&!!errs.name,onChange:function(e){setName(e.target.value);}}),
+        tried&&errs.name&&h("div",{className:"err"},errs.name),
+        h("label",{className:"lbl",htmlFor:"f-cls"},"학번 4자리"),
+        h("input",{id:"f-cls",className:"field",value:classNo,inputMode:"numeric",maxLength:10,placeholder:"예: 1416 (1학년 4반 16번)","aria-invalid":tried&&!!errs.cls,
+          onChange:function(e){setClassNo(normClass(e.target.value));}}),
+        tried&&errs.cls&&h("div",{className:"err"},errs.cls),
+        API&&h(React.Fragment,null,
+          h("label",{className:"lbl",htmlFor:"f-pin"},"기록 비밀번호 (숫자 4자리)"),
+          h("input",{id:"f-pin",className:"field",type:"password",value:pin,inputMode:"numeric",maxLength:4,autoComplete:"off","aria-invalid":tried&&!!errs.pin,"aria-describedby":"pin-hint",
+            onChange:function(e){setPin(e.target.value.replace(/[^0-9]/g,"").slice(0,4));}}),
+          tried&&errs.pin&&h("div",{className:"err"},errs.pin),
+          h("div",{id:"pin-hint",className:"hint",style:{margin:"-4px 0 12px"}},"처음 저장할 때 등록돼요. 다른 사람이 내 기록을 보거나 내 이름으로 저장하지 못하게 막아 줘요. 잊었다면 담당 선생님께 초기화를 부탁하세요.")),
+        h("label",{className:"lbl",htmlFor:"f-sub"},"과목·활동 (선택)"),
+        h("input",{id:"f-sub",className:"field",value:subject,maxLength:40,placeholder:"예: 일반물리 · R&E 실험",onChange:function(e){setSubject(e.target.value);}}),
+        h("label",{className:"check"},h("input",{type:"checkbox",checked:remember,onChange:function(e){setRemember(e.target.checked);if(!e.target.checked)store.set(K.profile,{remember:false});}}),
+          h("span",null,"이 기기에 이름·학번과 내 기록 저장 ",h("span",{className:"hint"},"(공용 컴퓨터에서는 끄세요. 비밀번호는 저장하지 않아요.)")))),
+      h("div",{className:"card fade"},
+        h("div",{className:"lbl"},"진단 섹션"),
+        h("div",{className:"hint mb12"},"⚡ Quick-Check만으로 충분해요. 필요할 때 다른 섹션을 더하세요."),
+        SEC_ORDER.map(function(id){var sec=SECTIONS[id],on=selSec.indexOf(id)>=0,kinds=[];sec.items.forEach(function(i){var k=KIND[i.input];if(kinds.indexOf(k)<0)kinds.push(k);});
+          return h("button",{key:id,type:"button",className:"sec-btn","aria-pressed":on,style:on?{borderColor:sec.color,background:sec.color+"14"}:null,
+            onClick:function(){setSelSec(function(p){return p.indexOf(id)>=0?p.filter(function(x){return x!==id;}):p.concat([id]);});}},
+            h("span",{style:{fontSize:"20px"},"aria-hidden":true},sec.icon),
+            h("div",{style:{flex:1}},h("div",{className:"t",style:on?{color:sec.color}:null},sec.title),h("div",{className:"s"},sec.items.filter(function(it){return !it.needsPrev;}).length+"문항 · "+kinds.join(" + "))),
+            h("span",{className:"box",style:on?{borderColor:sec.color,background:sec.color}:null,"aria-hidden":true},on?"✓":""));})),
+      h("button",{type:"button",className:"btn btn-ghost mb12","aria-expanded":showStrat,onClick:function(){setShowStrat(!showStrat);}},"📚 인지전략 참조표 "+(showStrat?"닫기 ▲":"보기 ▼")),
+      showStrat&&h("div",{className:"card"},CATS.map(function(c){return h("div",{key:c[0],className:"mb12"},
+        h("div",{className:"strat-cat"},c[0]," ",h("span",null,"· "+c[1])),
+        STRATEGIES.filter(function(s){return s.cat===c[0];}).map(function(s){return h("div",{key:s.no,className:"li"},h("span",{className:"n"},s.no),h("div",null,h("div",{className:"t"},s.name),h("div",{className:"d"},s.desc),h("div",{className:"d",style:{color:"#c7d2fe"}},"이럴 때: "+s.when)));}));})),
+      h("button",{type:"button",className:"btn btn-primary",disabled:!selSec.length,onClick:start},"자가진단 시작 ("+nQ+"문항 · 약 "+Math.max(1,Math.round(nQ*15/60))+"분)"),
+      h("button",{type:"button",className:"btn btn-soft mt12",onClick:openHistory},"📈 내 누적 기록 보기"),
+      h("p",{className:"hint center mt12"},API?"응답은 학교 연구용 시트에 저장돼요. 서술에 자해·자살 같은 위험 신호가 보이면 학생 보호를 위해 담당 선생님께 알려질 수 있어요.":"서버를 연결하면 응답이 학교 연구용 시트에 저장돼요."));
+  }
+
+  /* ─── CHECKLIST ─── */
+  function Checklist(){
+    var sec=active[curSec];if(!sec)return null;
+    var secItems=items.filter(function(it){return it.sid===sec.id;});
+    var last=curSec===active.length-1,left=items.length-done;
+    return h(React.Fragment,null,
+      h("div",{className:"row",style:{justifyContent:"space-between",fontSize:"13px",color:"#a3b1c6",marginBottom:"6px",flex:"none"}},
+        h("span",{style:{flex:"none"}},done+" / "+items.length+" 응답"),h("span",{style:{flex:"none",color:"#a5b4fc",fontWeight:700}},Math.round(items.length?done/items.length*100:0)+"%")),
+      h("div",{className:"prog",role:"progressbar","aria-valuemin":0,"aria-valuemax":items.length,"aria-valuenow":done},h("div",{style:{width:(items.length?done/items.length*100:0)+"%"}})),
+      active.length>1&&h("div",{className:"tabs",role:"tablist"},active.map(function(s,i){
+        var its=items.filter(function(it){return it.sid===s.id;}),all=its.every(function(it){return answered(it,resp[keyOf(it)]);});
+        return h("button",{key:s.id,type:"button",role:"tab","aria-selected":i===curSec,className:"tab",style:i===curSec?{borderColor:s.color,color:s.color,background:s.color+"1f"}:null,onClick:function(){setCurSec(i);}},s.icon+" "+(s.id==="quick"?"QC":s.id)+(all?" ✓":""));})),
+      h("div",{className:"sec-head",style:{borderLeftColor:sec.color,background:sec.color+"14",marginTop:active.length>1?0:"16px"}},
+        h("h2",{className:"h2",style:{color:sec.color}},sec.icon+" "+sec.title),h("p",{className:"hint"},sec.subtitle)),
+      secItems.map(function(it){
+        var k=keyOf(it),v=resp[k],ok=answered(it,v),tm=TM[it.type]||{c:"#888",i:""},qid="q-"+k;
+        var input=null;
+        if(it.input==="rating")input=h(RatingIn,{value:v,label:it.text,onChange:function(x){setAns(k,x);}});
+        else if(it.input==="scale5")input=h(Scale5In,{value:v,label:it.text,lo:it.lo,hi:it.hi,onChange:function(x){setAns(k,x);}});
+        else if(it.input==="percent")input=h(PercentIn,{value:v,label:it.text,onChange:function(x){setAns(k,x);}});
+        else if(it.input==="text")input=h(TextIn,{value:v,label:it.text,placeholder:it.placeholder,onChange:function(x){setAns(k,x);}});
+        else if(it.input==="plan")input=h(PlanIn,{value:v,onChange:function(x){setAns(k,x);}});
+        else if(it.input==="strategy")input=h(StratIn,{value:v,onChange:function(x){setAns(k,x);}});
+        var goal=resp["quick-Q1goal"];
+        return h("div",{key:k,className:"item fade"+(ok?" ok":""),role:"group","aria-labelledby":qid},
+          h("div",{className:"meta"},
+            h("span",{className:"badge",style:{background:tm.c+"22",color:tm.c}},tm.i+" "+it.type),
+            h("span",{className:"no"},"#"+it.no),h("span",{className:"kind"},KIND[it.input])),
+          it.needsPrev&&prevPlan&&h("div",{className:"quote"},"지난 다짐 ("+fmtShort(prevPlan.when)+"): "+prevPlan.plan),
+          h("p",{className:"q",id:qid},it.text),
+          it.sub&&h("p",{className:"sub"},it.sub),
+          it.showGoal&&goal&&String(goal).trim()&&h("div",{className:"quote"},"오늘 목표: "+goal),
+          input,
+          it.goal&&h("div",{className:"extra"},
+            h("label",{className:"lbl",htmlFor:"goal"},"오늘 목표 한 줄 (선택)"),
+            h("input",{id:"goal",className:"field",style:{marginBottom:0},maxLength:120,value:goal||"",placeholder:"예) 일반물리 3.2절 예제 1~4번 풀고 해설과 비교",onChange:function(e){setAns("quick-Q1goal",e.target.value||null);}})),
+          it.breath&&h("div",{className:"extra"},
+            h("button",{type:"button",className:"btn-sm btn-soft",onClick:function(){setBreath(true);}},"🌬️ 지금 1분 호흡 해 보기")));
+      }),
+      h("div",{className:"nav"},
+        curSec>0&&h("button",{type:"button",className:"btn btn-ghost",onClick:function(){setCurSec(curSec-1);}},"← 이전"),
+        last?h("button",{type:"button",className:"btn btn-primary",style:{flex:2},onClick:function(){setScreen("results");}},"결과 보기"+(left?" (미응답 "+left+")":"")):
+          h("button",{type:"button",className:"btn btn-primary",style:{flex:2},onClick:function(){setCurSec(curSec+1);}},"다음 섹션 →")),
+      h("button",{type:"button",className:"btn btn-ghost mt12",onClick:function(){setScreen("home");}},"🏠 처음으로 (작성 내용은 자동 저장돼요)"));
+  }
+
+  /* ─── RESULTS ─── */
+  function Results(){
+    var r=compute(items,resp),lv=levelOf(r.score);
+    var plan=planText(resp["quick-Q5"]);
+    var first=r.weak[0];
+    var tip=first?(ITEM_TIPS[keyOf(first.it)]||TYPE_TIPS[first.it.type]):"이번에는 모든 점검 문항이 ○예요. 다음에는 섹션 하나(예: 학습 후 평가)를 더해 더 자세히 점검해 보세요.";
+    var picked=[];Object.keys(resp).forEach(function(k){if(Array.isArray(resp[k]))resp[k].forEach(function(n){if(picked.indexOf(n)<0)picked.push(n);});});
+    var deep=picked.filter(function(n){var c=STRAT_BY_NO[n].cat;return c==="깊은 이해"||c==="연구활동";}).length;
+    var weakType=null,low=1;Object.keys(r.rd).forEach(function(t){if(r.rd[t]<low){low=r.rd[t];weakType=t;}});
+    var recNos=(REC_BY_TYPE[weakType]||[8,9,12]).slice();if(selSec.indexOf("E")>=0)recNos.push(13,14,16);
+    var recs=recNos.filter(function(n,i){return recNos.indexOf(n)===i&&picked.indexOf(n)<0;}).slice(0,3).map(function(n){return STRAT_BY_NO[n];});
+    var texts=items.filter(function(it){return (it.input==="text"&&answered(it,resp[keyOf(it)]));});
+    var circ=2*Math.PI*64;
+    var busy=saveState==="saving",isSaved=saveState==="saved"||saveState==="local"||saveState==="queued";
+    return h(React.Fragment,null,
+      h("div",{className:"center fade"},
+        h("div",{className:"hint"},nameT+"님의 메타인지 점검 · "+fmtDate(new Date().toISOString())),
+        h("div",{className:"ring"},
+          h("svg",{width:150,height:150,viewBox:"0 0 150 150","aria-hidden":true},
+            h("circle",{cx:75,cy:75,r:64,fill:"none",stroke:"rgba(255,255,255,.08)",strokeWidth:10}),
+            r.score!=null&&h("circle",{cx:75,cy:75,r:64,fill:"none",stroke:lv.c,strokeWidth:10,strokeLinecap:"round",strokeDasharray:(r.score/100*circ)+" "+circ,transform:"rotate(-90 75 75)"})),
+          h("div",{className:"c"},h("span",{style:{fontSize:"36px",fontWeight:900,color:lv.c}},r.score==null?"—":Math.round(r.score)),h("span",{className:"hint"},"/ 100"))),
+        h("div",{style:{fontSize:"16px",fontWeight:800,color:lv.c}},lv.l),
+        h("p",{className:"hint mt8",style:{color:"#cbd5e1"}},lv.m),
+        h("p",{className:"hint mt8"},"점수는 ○△✕·1~5 문항("+r.scoredN+"개)으로만 계산해요."+(r.unanswered?" 미응답 "+r.unanswered+"문항은 빠졌어요.":""))),
+      h("div",{style:{height:"16px"}}),
+      r.risk&&h(SafetyCard),
+      r.allMax&&h("div",{className:"banner info"},"모든 문항이 ○예요. 정말 그랬는지 한 문항만 다시 떠올려 볼까요? 솔직한 △가 다음 성장에 더 도움이 돼요."),
+      h("div",{className:"card step fade"},
+        h("div",{className:"h3",style:{color:"#e0e7ff"}},"👣 다음 한 걸음"),
+        h("p",null,tip),
+        first&&h("div",{className:"hint mt8"},"가장 낮았던 문항: #"+first.it.no+" "+first.it.text),
+        plan&&h("div",{className:"quote mt12",style:{marginBottom:0}},"내가 정한 다짐: "+plan)),
+      Object.keys(r.rd).length>0&&h("div",{className:"card fade"},
+        h("div",{className:"h3"},"🧠 메타인지 요소"),
+        h(Bars,{rows:TYPES.filter(function(t){return r.rd[t]!=null;}).map(function(t){return {label:TM[t].i+" "+t,value:r.rd[t],color:TM[t].c};})}),
+        weakType&&h("div",{className:"hint mt12"},"가장 낮은 요소: "+weakType+" "+Math.round(low*100)+"%")),
+      r.achieve!=null&&r.score!=null&&h("div",{className:"card fade"},
+        h("div",{className:"h3"},"🎯 내 느낌과 점검 비교"),
+        h(Bars,{rows:[{label:"목표 달성도",value:r.achieve/100,color:"#fbbf24"},{label:"점검 점수",value:r.score/100,color:"#818cf8"}]}),
+        h("div",{className:"hint mt12"},Math.abs(r.achieve-r.score)<15?"내가 느낀 달성도와 점검 결과가 비슷해요. 자기 평가가 정확한 편이에요.":
+          r.achieve<r.score?"전략은 잘 썼는데 목표 달성도는 낮게 느꼈어요. 목표가 너무 컸거나 기준이 흐렸을 수 있어요. 다음엔 목표를 더 작고 구체적으로 정해 보세요.":
+          "목표는 달성했다고 느꼈지만 점검 문항은 낮았어요. '진짜 이해했는지' 자기 테스트(설명하기·문제 풀기)로 확인해 보세요.")),
+      active.length>1&&h("div",{className:"card fade"},h("div",{className:"h3"},"📋 섹션별"),
+        h(Bars,{rows:active.filter(function(s){return r.ss[s.id]!=null;}).map(function(s){return {label:s.icon+" "+(s.id==="quick"?"QC":s.title.split(" — ")[0]),value:r.ss[s.id],color:s.color};})})),
+      h("div",{className:"card fade"},
+        h("div",{className:"h3"},"🧩 인지전략"),
+        picked.length>0?h(React.Fragment,null,
+          picked.map(function(n){var s=STRAT_BY_NO[n];return h("div",{key:n,className:"li"},h("span",{className:"n"},n),h("div",null,h("div",{className:"t"},s.name+" · "+s.cat),h("div",{className:"d"},"이럴 때: "+s.when)));}),
+          h("div",{className:"hint mt8"},"고른 전략 "+picked.length+"개 중 이해·연구 전략 "+deep+"개")):h("div",{className:"hint"},"이번에는 전략을 고르지 않았어요."),
+        recs.length>0&&h("div",{className:"mt12"},h("div",{className:"lbl"},"다음에 시도해 볼 전략"+(weakType?" ("+weakType+" 보완)":"")),
+          recs.map(function(s){return h("div",{key:s.no,className:"li"},h("span",{className:"n"},s.no),h("div",null,h("div",{className:"t"},s.name),h("div",{className:"d"},s.desc),h("div",{className:"d",style:{color:"#c7d2fe"}},"이럴 때: "+s.when)));}))),
+      texts.length>0&&h("div",{className:"card fade"},h("div",{className:"h3"},"📝 나의 서술"),
+        texts.map(function(it){return h("div",{key:keyOf(it),className:"quote"},h("div",{className:"hint"},"#"+it.no+" "+it.text),resp[keyOf(it)]);})),
+      h("button",{type:"button",className:"btn "+(isSaved?"btn-done":"btn-save"),disabled:busy||isSaved,onClick:function(){save(r);}},
+        busy?"저장 중...":saveState==="saved"?"✓ 저장 완료":saveState==="local"?"✓ 이 기기에 저장됨":saveState==="queued"?"✓ 기기에 보관됨 (나중에 전송)":"📤 결과 저장하기"),
+      isSaved&&h("div",{className:"mt12"},h(Reminder)),
+      h("div",{className:"nav"},
+        h("button",{type:"button",className:"btn btn-ghost",onClick:function(){setScreen("home");}},"🏠 처음으로"),
+        h("button",{type:"button",className:"btn btn-ghost",onClick:function(){setCurSec(0);setScreen("checklist");}},isSaved?"✏️ 고쳐서 다시 저장":"✏️ 수정하기")));
+  }
+
+  /* ─── HISTORY ─── */
+  function History(){
+    var body;
+    if(!hist||hist.loading)body=h("div",{className:"card center hint",role:"status"},"기록을 불러오는 중...");
+    else if(hist.error)body=h("div",{className:"banner warn",role:"alert"},hist.error);
+    else if(!hist.recs.length)body=h(React.Fragment,null,hist.warn&&h("div",{className:"banner warn"},hist.warn),h("div",{className:"card center"},h("div",{style:{fontSize:"36px"}},"📭"),h("div",{className:"h3 mt8"},"아직 기록이 없어요"),h("div",{className:"hint"},"체크리스트를 마치고 '결과 저장하기'를 누르면 여기에 쌓여요.")));
+    else{
+      var recs=hist.recs,N=recs.length,ws=weekStats(recs);
+      var sc=recs.filter(function(r){return r.score!=null;}).map(function(r){return r.score;});
+      var v4=recs.filter(function(r){return r.sv>=2&&r.score!=null;}).map(function(r){return r.score;});
+      var tAcc={};recs.forEach(function(r){Object.keys(r.types||{}).forEach(function(k){(tAcc[k]=tAcc[k]||[]).push(Number(r.types[k]));});});
+      var tAvg={};Object.keys(tAcc).forEach(function(k){tAvg[k]=mean(tAcc[k]);});
+      var cat={},cnt={},total=0;recs.forEach(function(r){r.strats.forEach(function(n){var s=STRAT_BY_NO[n];if(!s)return;cat[s.cat]=(cat[s.cat]||0)+1;cnt[n]=(cnt[n]||0)+1;total++;});});
+      var top=Object.keys(cnt).map(Number).sort(function(a,b){return cnt[b]-cnt[a];}).slice(0,3);
+      var deepShare=total?((cat["깊은 이해"]||0)+(cat["연구활동"]||0))/total:null;
+      var plans=recs.filter(function(r){return r.plan;}).slice(-5).reverse();
+      var weakT=null,lowV=1;Object.keys(tAvg).forEach(function(k){if(tAvg[k]<lowV){lowV=tAvg[k];weakT=k;}});
+      var lines=[];
+      if(ws.daysSince!=null)lines.push(ws.daysSince>=7?"마지막 체크 후 "+ws.daysSince+"일이 지났어요. 메타인지는 자주 돌아볼수록 자라요.":"이번 주 "+ws.thisWeek+"회, "+ws.streak+"주 연속으로 체크했어요.");
+      if(weakT)lines.push("누적으로 가장 낮은 요소는 '"+weakT+"'("+Math.round(lowV*100)+"%)예요. "+TYPE_TIPS[weakT]);
+      if(deepShare!=null)lines.push(deepShare<.5?"고른 전략 중 이해·연구 전략은 "+Math.round(deepShare*100)+"%예요. 외우기 전략에 기대고 있다면 자기 질문·설명하기를 섞어 보세요.":"고른 전략의 "+Math.round(deepShare*100)+"%가 이해·연구 전략이에요. 깊이 있게 공부하고 있어요.");
+      if(top.length)lines.push("자주 쓰는 전략: "+top.map(function(n){return STRAT_BY_NO[n].name+"("+cnt[n]+"회)";}).join(", "));
+      body=h(React.Fragment,null,
+        hist.warn&&h("div",{className:"banner warn"},hist.warn),
+        h("div",{className:"tiles"},
+          h("div",{className:"tile"},h("div",{className:"v"},N),h("div",{className:"k"},"전체 회차")),
+          h("div",{className:"tile"},h("div",{className:"v"},ws.thisWeek),h("div",{className:"k"},"이번 주")),
+          h("div",{className:"tile"},h("div",{className:"v"},ws.streak),h("div",{className:"k"},"연속 주")),
+          h("div",{className:"tile"},h("div",{className:"v"},v4.length?Math.round(mean(v4)):sc.length?Math.round(mean(sc)):"-"),h("div",{className:"k"},v4.length?"평균(v4)":"평균 점수"))),
+        h("div",{className:"card step"},h("div",{className:"h3",style:{color:"#e0e7ff"}},"🪄 나의 메타인지 패턴"),lines.map(function(l,i){return h("p",{key:i,style:{fontSize:"14px",marginBottom:"8px"}},"▸ "+l);})),
+        sc.length>=2&&h("div",{className:"card"},h("div",{className:"h3"},"📈 점수 추세"),h(TrendLine,{recs:recs})),
+        Object.keys(tAvg).length>0&&h("div",{className:"card"},h("div",{className:"h3"},"🧠 요소별 평균"),
+          h(Bars,{rows:TYPES.filter(function(t){return tAvg[t]!=null;}).map(function(t){return {label:TM[t].i+" "+t,value:tAvg[t],color:TM[t].c};})})),
+        total>0&&h("div",{className:"card"},h("div",{className:"h3"},"🧩 고른 전략 종류 ("+total+"회)"),
+          h(Bars,{rows:CATS.map(function(c){return {label:c[0],value:(cat[c[0]]||0)/total,color:c[0]==="단순 기억"?"#94a3b8":c[0]==="필수 기억"?"#60a5fa":c[0]==="깊은 이해"?"#818cf8":"#fb923c",right:(cat[c[0]]||0)+"회"};})})),
+        plans.length>0&&h("div",{className:"card"},h("div",{className:"h3"},"🔁 지난 다짐 돌아보기"),
+          plans.map(function(r,i){return h("div",{key:i,className:"quote"},h("div",{className:"hint"},fmtShort(r.when)),r.plan);})),
+        h("div",{className:"card"},h("div",{className:"h3"},"📅 최근 기록"),
+          recs.slice().reverse().slice(0,8).map(function(r,i){return h("div",{key:i,className:"li"},
+            h("span",{className:"n",style:{fontSize:"15px"}},r.score==null?"-":Math.round(r.score)),
+            h("div",{style:{minWidth:0}},h("div",{className:"t",style:{fontSize:"13px"}},fmtDate(r.when)+(r.sv<2?" · v3":"")),h("div",{className:"d"},r.sections+(r.subject?" · "+r.subject:""))));})),
+        h(Reminder));
+    }
+    return h(React.Fragment,null,
+      h("div",{className:"center",style:{marginBottom:"18px"}},
+        h("h1",{className:"h1"},"📈 내 누적 기록"),
+        h("p",{className:"hint"},nameT+" · "+clsT+(hist&&hist.source==="local"?" · 이 기기 기록":hist&&hist.source==="server"?" · 서버 기록":""))),
+      body,
+      h("div",{className:"nav"},
+        h("button",{type:"button",className:"btn btn-ghost",onClick:function(){setScreen("home");}},"🏠 처음으로"),
+        hist&&!hist.loading&&h("button",{type:"button",className:"btn btn-soft",onClick:openHistory},"🔄 새로고침")));
+  }
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(h(App));
+})();
+</script>
+</body>
+</html>
